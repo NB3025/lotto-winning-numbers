@@ -7,7 +7,7 @@ def __init__(self):
  - 동행복권사이트를 GET요청하고 응답 상태를 확인. --> 함수를 통해 요청하고
  - 만약 응답코드가 200이라면 self.html에 requests를 통해 받아온 데이터 저장
 
-def request_GET(self):
+def get_html(self):
 
 
 def parsing_html(self):
@@ -18,27 +18,35 @@ def parsing_html(self):
 """
 
 class Lotto():
-    def __init__(self,drwNo=0):
+    def __init__(self,drwTitle=0):
         
         self.URL = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
         self.html = ''
         self.status_code = 0        
 
-        self.drwNo = drwNo
-        if drwNo == 0:
-            self.get_latest_lottoDrwNo()
-        self.dwrNoList = drwNo
-        self.post_data = {'drwNo': self.drwNo, 'dwrNoList': self.dwrNoList}
+        self.DRWTITLE_HTML_ID = '#dwrNoList > option:nth-child(1)'
+        self.DRWNO_HTML_IDS = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("
+        self.drwno_ids = [ self.DRWNO_HTML_IDS+str(i)+")" for i in range(1,7)]
         
-        self.drwtNos = []
+        self.drwTitle = self.get_latest_lottoDrwtitle()
+
+        if self.drwTitle >= drwTitle and drwTitle != 0:
+            self.drwTitle = drwTitle
+
+        self.dwrNoList = self.drwTitle
+        self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}
+
+        self.drwtNos = {}
+
+        self.get_html('POST')
+        self.parsing_html()
 
 
-    def get_html_data(self,method,data=None):
+    def get_html(self,method):
 
         if method == 'GET':
             response = requests.get(self.URL)
         else:
-            self.post_data = data
             response = requests.post(self.URL, self.post_data)
 
         self.status_code = response.status_code
@@ -52,12 +60,14 @@ class Lotto():
     def parsing_html(self):
 
         soup = BeautifulSoup(self.html, 'html.parser')
-        for i in range(1,7):
-            target_id = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("+str(i)+")"
-            num = soup.select_one(target_id).get_text()
-            self.drwtNos.append(num)
         
-        if len(self.drwtNos) == 6:
+        arr = []
+        for drwno_id in self.drwno_ids:
+            num = soup.select_one(drwno_id).get_text()
+            arr.append(num)
+        
+        if len(arr) == 6:
+            self.drwtNos[self.drwTitle]=arr
             return True
         else:
             print (f'error {len(self.drwtNos)=}')
@@ -65,27 +75,50 @@ class Lotto():
 
 
 
-    def get_latest_lottoDrwNo(self):
+    def get_latest_lottoDrwtitle(self):
 
-        if self.get_html_data('GET'):
+        if self.get_html('GET'):
+
             soup = BeautifulSoup(self.html, 'html.parser')
+            drwTitle = soup.select_one(self.DRWTITLE_HTML_ID).get_text()
 
-            target_id = '#dwrNoList > option:nth-child(1)'
-            self.title = soup.select_one(target_id).get_text()
-            
-            return True
+            return int(drwTitle)
         else:
             print (f'error {self.status_code=}')
             return False
 
-    def __repr__(self):
-        print (f'{self.title}')
-        print (','.join(map(str,self.drwtNos)))
-        return ''
-        
-mylotto=Lotto()
 
+    def get_latest_lottoDrwNum(self, count=1):
+
+        if count < 0:
+            print (f'error : count is zero')
+            return False     
+        self.drwTitle = self.get_latest_lottoDrwtitle()
+        for _ in range(count):
+            self.get_html('POST')
+            self.parsing_html()
+            self.drwTitle -=1
+            self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}
+            
+
+    def __repr__(self):
+        for key in self.drwtNos.keys():
+            print (f'{key}회 당첨번호: {self.drwtNos[key]}')
+        return ''
+
+
+# 최근 회차 당첨번호 조회
+mylotto=Lotto()
 print (mylotto)
-mylotto.get_html_data('POST')
-mylotto.parsing_html()
+
+# 특정 회차 당첨번호 조회
+mylotto=Lotto(13)
 print (mylotto)
+
+# 최근 10개 당첨번호 조회 
+mylotto.get_latest_lottoDrwNum(10)
+print (mylotto)
+
+
+
+
