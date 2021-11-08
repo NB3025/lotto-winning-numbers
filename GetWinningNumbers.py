@@ -18,33 +18,65 @@ def parsing_html(self):
 """
 
 class Lotto():
-    def __init__(self):
+    def __init__(self,drwNo=0):
         
         self.URL = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
         self.html = ''
-        self.status_code = ''
-        self.drwtNos = []
-        self.title = ''
+        self.status_code = 0        
 
-        self.request_GET()
-        self.parsing_html()
-    
-    def request_GET(self):
-        response = requests.get(self.URL)
-        if response.status_code == 200:
+        self.drwNo = drwNo
+        if drwNo == 0:
+            self.get_latest_lottoDrwNo()
+        self.dwrNoList = drwNo
+        self.post_data = {'drwNo': self.drwNo, 'dwrNoList': self.dwrNoList}
+        
+        self.drwtNos = []
+
+
+    def get_html_data(self,method,data=None):
+
+        if method == 'GET':
+            response = requests.get(self.URL)
+        else:
+            self.post_data = data
+            response = requests.post(self.URL, self.post_data)
+
+        self.status_code = response.status_code
+        if self.status_code == 200:
             self.html = response.text
-            self.status_code = response.status_code
             return True
         else:
             return False
+            
 
     def parsing_html(self):
+
         soup = BeautifulSoup(self.html, 'html.parser')
-        self.title = soup.select_one('#lottoDrwNo').get_text()
         for i in range(1,7):
-            target_id = '#drwtNo'+str(i)
+            target_id = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("+str(i)+")"
             num = soup.select_one(target_id).get_text()
             self.drwtNos.append(num)
+        
+        if len(self.drwtNos) == 6:
+            return True
+        else:
+            print (f'error {len(self.drwtNos)=}')
+            return False
+
+
+
+    def get_latest_lottoDrwNo(self):
+
+        if self.get_html_data('GET'):
+            soup = BeautifulSoup(self.html, 'html.parser')
+
+            target_id = '#dwrNoList > option:nth-child(1)'
+            self.title = soup.select_one(target_id).get_text()
+            
+            return True
+        else:
+            print (f'error {self.status_code=}')
+            return False
 
     def __repr__(self):
         print (f'{self.title}')
@@ -52,42 +84,8 @@ class Lotto():
         return ''
         
 mylotto=Lotto()
-# mylotto.request_GET()
-# mylotto.parsing_html()
-print(mylotto)
-# response = requests.get(URL)
-# if response.status_code == 200:
-#     html = response.text
-#     soup = BeautifulSoup(html, 'html.parser')
-#     title = soup.select_one('#lottoDrwNo')
-    
-#     drwtNos = []
-#     for i in range(1,7):
-#         target_id = '#drwtNo'+str(i)
-#         num = soup.select_one(target_id).get_text()
-#         drwtNos.append(num)
 
-#     print(title.get_text())
-#     print (','.join(map(str,drwtNos)))
-
-# else : 
-#     print(response.status_code)
-
-
-URL = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
-# 987회차 값을 얻기 위해 각 값에 987을 할당
-data = {'drwNo': 987, 'dwrNoList': 987}
-res = requests.post(URL, data=data)
-
-soup = BeautifulSoup(res.text, 'html.parser')
-
-arr=[]
-
-# 얻어온 selector값을 이용하여 당첨번호를 획득하고 배열에 저장
-for i in range(1,7):
-            target_id = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("+str(i)+")"
-            num = soup.select_one(target_id).get_text()
-            arr.append(num)
-# 당첨번호 출력
-print (','.join(map(str,arr)))
-
+print (mylotto)
+mylotto.get_html_data('POST')
+mylotto.parsing_html()
+print (mylotto)
