@@ -91,7 +91,8 @@ class Lotto():
             print (f'error {self.status_code=}')
             return False
 
-
+    #TODO start, end 를 받아서 원하는 기간의 숫자만 받도록.
+    # end가 없으면 최근회차까지 모두 받기
     def get_latest_lottoDrwNum(self, count=1):
 
         if count < 0:
@@ -107,7 +108,8 @@ class Lotto():
             self.parsing_html()        
             self.drwTitle -=1
             
-
+    # TODO return으로 파일경로. 파일명 회차이용해서 만들어야함
+    # name을 인수로 받아서 원하는 파일명으로 생성
     def make_csv(self):
         
         df = pd.DataFrame(self.drwtNos)
