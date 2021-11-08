@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import pandas as pd
 
 """ 동행복권 사이트에서 로또 당첨번호를 파싱할 수 있는 클래스
 def __init__(self):
@@ -40,6 +40,10 @@ class Lotto():
 
         self.get_html('POST')
         self.parsing_html()
+
+
+    def get_drwtNos(self):
+        return self.drwtNos
 
 
     def get_html(self,method):
@@ -93,14 +97,26 @@ class Lotto():
         if count < 0:
             print (f'error : count is zero')
             return False     
+        
+        self.drwtNos = {}
         self.drwTitle = self.get_latest_lottoDrwtitle()
+        
         for _ in range(count):
+            self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}        
             self.get_html('POST')
-            self.parsing_html()
+            self.parsing_html()        
             self.drwTitle -=1
-            self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}
             
 
+    def make_csv(self):
+        
+        df = pd.DataFrame(self.drwtNos)
+        df = df.T
+        df.columns = ['drwtNo1', 'drwtNo2', 'drwtNo3', 'drwtNo4', 'drwtNo5', 'drwtNo6']
+        df.index.name = 'title'
+        
+        df.to_csv('test.csv')
+        
     def __repr__(self):
         for key in self.drwtNos.keys():
             print (f'{key}회 당첨번호: {self.drwtNos[key]}')
@@ -119,6 +135,5 @@ print (mylotto)
 mylotto.get_latest_lottoDrwNum(10)
 print (mylotto)
 
-
-
-
+# 최근 조회한 당첨번호를 csv로 생성
+mylotto.make_csv()
