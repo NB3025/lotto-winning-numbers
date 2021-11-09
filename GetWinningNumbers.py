@@ -96,54 +96,44 @@ class Lotto():
 
     #TODO start, end 를 받아서 원하는 기간의 숫자만 받도록.
     # end가 없으면 최근회차까지 모두 받기
-    def get_range_lottoDrwNum(self, start=0, end=0, range=0):
+    def get_range_lottoDrwNum(self, start=0, end=0, count=0):
 
-        if start < 0 and end < 0 and range < 0:
-            print (f'error : value is negative -> {start=}, {end=}, {range=}')
+        if start < 0 and end < 0 and count < 0:
+            print (f'error : value is negative -> {start=}, {end=}, {count=}')
             return False
         
-        if start*end*range != 0 :
-            print (f'error : range is wrong -> {start=}, {end=}, {range=}')
+        if start*end*count != 0 :
+            print (f'error : range is wrong -> {start=}, {end=}, {count=}')
         self.drwtNos = {}
 
         # start, end 없고 range만 있을때
-        if start == 0 and end == 0 and range != 0:
+        if start == 0 and end == 0 and count != 0:
             # 최근회차 range 갯수만큼
             end = self.get_latest_lottoDrwtitle()
-            start = end - range
+            start = end - count
             pass
 
-        elif start !=0 and end == 0 and range != 0:
+        elif start !=0 and end == 0 and count != 0:
             # start부터 range 갯수만큼
-            end = start+range
+            end = start+count
             pass
 
-        elif start !=0 and end == 0 and range == 0:
+        elif start !=0 and end == 0 and count == 0:
             # start 부터 제일 마지막까지
             end = self.get_latest_lottoDrwtitle()
             pass
 
-        elif start !=0 and end !=0 and range == 0:
+        elif start !=0 and end !=0 and count == 0:
             # start부터 end까지
             pass
             
-        print (f'{start=} {end=}')
-
-        # if start > 0 and end > 0:
-        #     print (f'a')
-        #     if start < end :
-        #         print (f'error : start({start}) < end({end}) ')
-        #         return False
-            
-        #     print (f'b')
-        #     if end == 0:
-        #         end = self.get_latest_lottoDrwtitle()
-
-        #     print (f'c {start=} {end=}')
-        #     for i in range(start, end):
-        #         self.post_data = {'drwNo': i, 'drwNoList': i}
-        #         self.get_html('POST')
-        #         self.parsing_html()        
+        print (f' {start=} {end=}')
+        print (f' {type(start)} {type(end)}')
+        
+        for i in range(start,end):
+            self.post_data = {'drwNo': i, 'drwNoList': i}
+            self.get_html('POST')
+            self.parsing_html()        
                 
         
     # 특정 회차 호출하기
@@ -195,11 +185,16 @@ mylotto=Lotto(13)
 print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_range_lottoDrwNum(range=10)
-mylotto.get_range_lottoDrwNum(start=900, range=10)
-mylotto.get_range_lottoDrwNum(start=900)
-mylotto.get_range_lottoDrwNum(start=900, end=910)
+mylotto.get_range_lottoDrwNum(count=10)
+print (mylotto)
 
+mylotto.get_range_lottoDrwNum(start=900, count=10)
+print (mylotto)
+
+mylotto.get_range_lottoDrwNum(start=980)
+print (mylotto)
+
+mylotto.get_range_lottoDrwNum(start=900, end=910)
 print (mylotto)
 
 # mylotto.get_range_lottoDrwNum(980)
