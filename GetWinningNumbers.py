@@ -28,18 +28,21 @@ class Lotto():
         self.DRWNO_HTML_IDS = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("
         self.drwno_ids = [ self.DRWNO_HTML_IDS+str(i)+")" for i in range(1,7)]
         
+        # 기본으로 제일 최근회차 가져옴
         self.drwTitle = self.get_latest_lottoDrwtitle()
 
+        # 생성값으로 받은 drwTitle이 제일 최근보다 작은데 0이 아니면
         if self.drwTitle >= drwTitle and drwTitle != 0:
             self.drwTitle = drwTitle
 
-        self.dwrNoList = self.drwTitle
+        # self.dwrNoList = self.drwTitle
         self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}
 
         self.drwtNos = {}
+        self.get_latest_lottoDrwNum(self.drwTitle)
 
-        self.get_html('POST')
-        self.parsing_html()
+        # self.get_html('POST')
+        # self.parsing_html()
 
 
     def get_drwtNos(self):
@@ -78,7 +81,7 @@ class Lotto():
             return False
 
 
-
+    # 최근 회차 가져오는 함수
     def get_latest_lottoDrwtitle(self):
 
         if self.get_html('GET'):
@@ -93,21 +96,79 @@ class Lotto():
 
     #TODO start, end 를 받아서 원하는 기간의 숫자만 받도록.
     # end가 없으면 최근회차까지 모두 받기
-    def get_latest_lottoDrwNum(self, count=1):
+    def get_range_lottoDrwNum(self, start=0, end=0, range=0):
 
-        if count < 0:
-            print (f'error : count is zero')
-            return False     
+        if start < 0 and end < 0 and range < 0:
+            print (f'error : value is negative -> {start=}, {end=}, {range=}')
+            return False
+        
+        if start*end*range != 0 :
+            print (f'error : range is wrong -> {start=}, {end=}, {range=}')
+        self.drwtNos = {}
+
+        # start, end 없고 range만 있을때
+        if start == 0 and end == 0 and range != 0:
+            # 최근회차 range 갯수만큼
+            end = self.get_latest_lottoDrwtitle()
+            start = end - range
+            pass
+
+        elif start !=0 and end == 0 and range != 0:
+            # start부터 range 갯수만큼
+            end = start+range
+            pass
+
+        elif start !=0 and end == 0 and range == 0:
+            # start 부터 제일 마지막까지
+            end = self.get_latest_lottoDrwtitle()
+            pass
+
+        elif start !=0 and end !=0 and range == 0:
+            # start부터 end까지
+            pass
+            
+        print (f'{start=} {end=}')
+
+        # if start > 0 and end > 0:
+        #     print (f'a')
+        #     if start < end :
+        #         print (f'error : start({start}) < end({end}) ')
+        #         return False
+            
+        #     print (f'b')
+        #     if end == 0:
+        #         end = self.get_latest_lottoDrwtitle()
+
+        #     print (f'c {start=} {end=}')
+        #     for i in range(start, end):
+        #         self.post_data = {'drwNo': i, 'drwNoList': i}
+        #         self.get_html('POST')
+        #         self.parsing_html()        
+                
+        
+    # 특정 회차 호출하기
+    # title을 지정하면 해당 회차를 호출
+    # title이 0일때  제일 최근회차
+    def get_latest_lottoDrwNum(self, title=0):
+
+        if title < 0:
+            print (f'error : title is negative -> {title=}')
+            return False
+        
+        elif title != 0:
+            self.drwtitle = title
+            
+        elif title == 0:
+            self.drwtitle = self.get_latest_lottoDrwtitle()
         
         self.drwtNos = {}
-        self.drwTitle = self.get_latest_lottoDrwtitle()
         
-        for _ in range(count):
-            self.post_data = {'drwNo': self.drwTitle, 'dwrNoList': self.drwTitle}        
-            self.get_html('POST')
-            self.parsing_html()        
-            self.drwTitle -=1
+        self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
+        self.get_html('POST')
+        self.parsing_html()        
+
             
+
     # TODO return으로 파일경로. 파일명 회차이용해서 만들어야함
     # name을 인수로 받아서 원하는 파일명으로 생성
     def make_csv(self):
@@ -134,8 +195,15 @@ mylotto=Lotto(13)
 print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_latest_lottoDrwNum(10)
+mylotto.get_range_lottoDrwNum(range=10)
+mylotto.get_range_lottoDrwNum(start=900, range=10)
+mylotto.get_range_lottoDrwNum(start=900)
+mylotto.get_range_lottoDrwNum(start=900, end=910)
+
 print (mylotto)
 
+# mylotto.get_range_lottoDrwNum(980)
+# print (mylotto)
+
 # 최근 조회한 당첨번호를 csv로 생성
-mylotto.make_csv()
+# mylotto.make_csv()
