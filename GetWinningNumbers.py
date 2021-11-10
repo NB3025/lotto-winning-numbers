@@ -28,6 +28,8 @@ class Lotto():
         self.DRWNO_HTML_IDS = "#article > div:nth-child(2) > div > div.win_result > div > div.num.win > p > span:nth-child("
         self.drwno_ids = [ self.DRWNO_HTML_IDS+str(i)+")" for i in range(1,7)]
         
+        self.file_name = ''
+
         # 기본으로 제일 최근회차 가져옴
         self.drwTitle = self.get_latest_lottoDrwtitle()
 
@@ -160,14 +162,17 @@ class Lotto():
 
     # TODO return으로 파일경로. 파일명 회차이용해서 만들어야함
     # name을 인수로 받아서 원하는 파일명으로 생성
-    def make_csv(self):
+    def make_csv(self, file_name='lotto-winning-numbers.csv'):
         
+        self.file_name = file_name
+
         df = pd.DataFrame(self.drwtNos)
         df = df.T
         df.columns = ['drwtNo1', 'drwtNo2', 'drwtNo3', 'drwtNo4', 'drwtNo5', 'drwtNo6']
         df.index.name = 'title'
+        df = df.sort_index(ascending=False)
         
-        df.to_csv('test.csv')
+        df.to_csv(self.file_name)
         
     def __repr__(self):
         for key in self.drwtNos.keys():
@@ -184,20 +189,18 @@ mylotto=Lotto(13)
 print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_range_lottoDrwNum(count=10)
-print (mylotto)
-
-mylotto.get_range_lottoDrwNum(start=900, count=10)
-print (mylotto)
-
-mylotto.get_range_lottoDrwNum(start=980)
-print (mylotto)
-
-mylotto.get_range_lottoDrwNum(start=900, end=910)
-print (mylotto)
-
-# mylotto.get_range_lottoDrwNum(980)
+# mylotto.get_range_lottoDrwNum(count=10)
 # print (mylotto)
 
-# 최근 조회한 당첨번호를 csv로 생성
-# mylotto.make_csv()
+# mylotto.get_range_lottoDrwNum(start=900, count=10)
+# print (mylotto)
+
+# mylotto.get_range_lottoDrwNum(start=980)
+# print (mylotto)
+
+# mylotto.get_range_lottoDrwNum(start=900, end=910)
+# print (mylotto)
+
+mylotto.get_range_lottoDrwNum(start=900, end=910)
+
+mylotto.make_csv()
