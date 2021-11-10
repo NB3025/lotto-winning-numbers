@@ -1,6 +1,10 @@
+from numpy import mat
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+
+import os
+import datetime
 
 """ 동행복권 사이트에서 로또 당첨번호를 파싱할 수 있는 클래스
 def __init__(self):
@@ -147,10 +151,10 @@ class Lotto():
             return False
         
         elif title != 0:
-            self.drwtitle = title
+            self.drwTitle = title
             
         elif title == 0:
-            self.drwtitle = self.get_latest_lottoDrwtitle()
+            self.drwTitle = self.get_latest_lottoDrwtitle()
         
         self.drwtNos = {}
         
@@ -162,6 +166,8 @@ class Lotto():
 
     # TODO return으로 파일경로. 파일명 회차이용해서 만들어야함
     # name을 인수로 받아서 원하는 파일명으로 생성
+    # 파일명 중복인 경우 어떻게 출력할까? 날짜/시간붙여서 생성하면 중복처리 안해도됨
+    # 근데 파일명을 직접입력받는경우
     def make_csv(self, file_name='lotto-winning-numbers.csv'):
         
         self.file_name = file_name
@@ -172,8 +178,40 @@ class Lotto():
         df.index.name = 'title'
         df = df.sort_index(ascending=False)
         
-        df.to_csv(self.file_name)
+        file_list = os.listdir(os.getcwd())
+
+        if file_name in file_list:
+            now = datetime.datetime.now()
+            nowDatetime = now.strftime('%Y%m%d_%H%M%S_')
+            self.file_name = nowDatetime+file_name
         
+        df.to_csv(self.file_name)
+
+        return True
+    
+    def update_csv(self, file_name='lotto-winning-numbers.csv'):
+        self.file_name = file_name
+
+        df_1 = pd.read_csv(self.file_name, index_col='title')
+        
+        self.get_latest_lottoDrwNum()
+        if self.drwTitle == int(df_1.index[0]):
+            print (f'There is nothing to update.')
+            return False
+        
+        df_2 = pd.DataFrame(self.drwtNos)
+        df_2 = df_2.T
+        df_2.columns = ['drwtNo1', 'drwtNo2', 'drwtNo3', 'drwtNo4', 'drwtNo5', 'drwtNo6']
+        df_2.index.name = 'title'
+
+        df = pd.concat([df_1,df_2])
+        df = df.sort_index(ascending=False)
+
+        df.to_csv(self.file_name)
+        print (f'Updated.')
+        return True
+
+
     def __repr__(self):
         for key in self.drwtNos.keys():
             print (f'{key}회 당첨번호: {self.drwtNos[key]}')
@@ -182,14 +220,14 @@ class Lotto():
 
 # 최근 회차 당첨번호 조회
 mylotto=Lotto()
-print (mylotto)
+# print (mylotto)
 
 # 특정 회차 당첨번호 조회
-mylotto=Lotto(13)
-print (mylotto)
+# mylotto=Lotto(13)
+# print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-# mylotto.get_range_lottoDrwNum(count=10)
+mylotto.get_range_lottoDrwNum(count=10)
 # print (mylotto)
 
 # mylotto.get_range_lottoDrwNum(start=900, count=10)
@@ -201,6 +239,7 @@ print (mylotto)
 # mylotto.get_range_lottoDrwNum(start=900, end=910)
 # print (mylotto)
 
-mylotto.get_range_lottoDrwNum(start=900, end=910)
+# mylotto.get_range_lottoDrwNum(start=900, end=910)
 
-mylotto.make_csv()
+# mylotto.make_csv()
+mylotto.update_csv()
