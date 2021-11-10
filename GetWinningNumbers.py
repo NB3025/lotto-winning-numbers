@@ -110,28 +110,27 @@ class Lotto():
         if start == 0 and end == 0 and count != 0:
             # 최근회차 range 갯수만큼
             end = self.get_latest_lottoDrwtitle()
+            end +=1
             start = end - count
-            pass
 
         elif start !=0 and end == 0 and count != 0:
             # start부터 range 갯수만큼
             end = start+count
-            pass
 
         elif start !=0 and end == 0 and count == 0:
             # start 부터 제일 마지막까지
             end = self.get_latest_lottoDrwtitle()
-            pass
+            end +=1
 
         elif start !=0 and end !=0 and count == 0:
             # start부터 end까지
-            pass
-            
-        print (f' {start=} {end=}')
-        print (f' {type(start)} {type(end)}')
+            end +=1
         
+        self.drwtNos = {}
+
         for i in range(start,end):
-            self.post_data = {'drwNo': i, 'drwNoList': i}
+            self.drwTitle = i
+            self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
             self.get_html('POST')
             self.parsing_html()        
                 
