@@ -131,7 +131,7 @@ fname = 'lotto-winning-numbers.csv'
 from GetWinningNumbers import Lotto
 
 lotto = Lotto()
-lotto.get_range_lottoDrwNum(start=600)
+lotto.get_range_lottoDrwNum(count=80)
 lotto.update_csv(fname)
 
 
@@ -165,59 +165,5 @@ for l_number in lucky_numbers:
 
 sorted_keys = sorted(lucky_numbers_dict.keys(),reverse=True)
 
-for sorted_key in sorted_keys:
+for sorted_key in sorted_keys[0:5]:
     print (f'점수: {sorted_key} // 번호 {lucky_numbers_dict[sorted_key]}')
-
-# tmp_df.to_csv('20210401_test_v0.2.csv')
-
-
-# print (lucky.draw_lucky_number())
-# df = lucky.get_file(fname)
-
-# lucky.get_cycle_count(df,5)
-
-
-# print (len(df))
-# for i in range(len(df)):
-#     print (f'{i}:{i+11}')
-
-# for i in range(1,46):
-#     print ("'"+str(i)+"',",end=' ')
-'''
-result_df = None
-
-for i in range(0,3):
-# for i in range(len(df)):
-
-    result_dict = {}
-    for col_number in range(1, 46):
-        result_dict[col_number] = 0
-
-    for col in COLS:
-        value_counts = df[i:i+11][col].value_counts()
-        value_dict = value_counts.to_dict()
-        for key in value_dict.keys():
-            result_dict[key] += value_dict[key]
-
-    print (result_dict)
-
-    if result_df is None:
-        print (f'{i} none')
-        result_df = pd.DataFrame([result_dict])
-    else:
-        print (f'{i} not none')
-        print (result_df)
-        result_df.append(result_dict,ignore_index=True)
-
-print (result_df)
-
-
-
-tmp1 = pd.DataFrame([result_dict])
-tmp2 = pd.DataFrame.append(result_dict,  ignore_index=True)
-print(tmp1)
-
-print (type(tmp1))
-
-print (tmp1.append(result_dict, ignore_index=True))
-'''

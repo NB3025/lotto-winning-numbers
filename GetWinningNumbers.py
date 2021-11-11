@@ -4,9 +4,11 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from tqdm import tqdm
 
+
 import os
 import datetime
 import time
+import pickle
 
 """ 동행복권 사이트에서 로또 당첨번호를 파싱할 수 있는 클래스
 def __init__(self):
@@ -88,62 +90,7 @@ class Lotto:
         else:
             print (f'error {len(self.drwtNos)=}')
             return False
-
-
-    # 최근 회차 가져오는 함수
-    def get_latest_lottoDrwtitle(self):
-
-        if self.get_html('GET'):
-
-            soup = BeautifulSoup(self.html, 'html.parser')
-            drwTitle = soup.select_one(self.DRWTITLE_HTML_ID).get_text()
-
-            return int(drwTitle)
-        else:
-            print (f'error {self.status_code=}')
-            return False
-
-
-    def get_range_lottoDrwNum(self, start=0, end=0, count=0):
-
-        if start < 0 and end < 0 and count < 0:
-            print (f'error : value is negative -> {start=}, {end=}, {count=}')
-            return False
-        
-        if start*end*count != 0 :
-            print (f'error : range is wrong -> {start=}, {end=}, {count=}')
-        self.drwtNos = {}
-
-        # start, end 없고 count만 있을때
-        if start == 0 and end == 0 and count != 0:
-            # 최근회차 range 갯수만큼
-            end = self.get_latest_lottoDrwtitle()
-            end +=1
-            start = end - count
-
-        elif start !=0 and end == 0 and count != 0:
-            # start부터 count 갯수만큼
-            end = start+count
-
-        elif start !=0 and end == 0 and count == 0:
-            # start 부터 제일 마지막까지
-            end = self.get_latest_lottoDrwtitle()
-            end +=1
-
-        elif start !=0 and end !=0 and count == 0:
-            # start부터 end까지
-            end +=1
-        
-        self.drwtNos = {}
-
-        for i in tqdm(range(start,end)):
-            if i%30==0:
-                time.sleep(2)
-            self.drwTitle = i
-            self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
-            self.get_html('POST')
-            self.parsing_html()        
-                
+               
         
     # 특정 회차 호출하기
     # title을 지정하면 해당 회차를 호출
@@ -166,7 +113,90 @@ class Lotto:
         self.get_html('POST')
         self.parsing_html()        
 
+
+    # 최근 회차 가져오는 함수
+    def get_latest_lottoDrwtitle(self):
+
+        if self.get_html('GET'):
+
+            soup = BeautifulSoup(self.html, 'html.parser')
+            drwTitle = soup.select_one(self.DRWTITLE_HTML_ID).get_text()
+
+            return int(drwTitle)
+        else:
+            print (f'error {self.status_code=}')
+            return False
+
+
+    def get_range_lottoDrwNum(self, start=0, end=0, count=0):
+
+        if start < 0 and end < 0 and count < 0:
+            print (f'error : value is negative -> {start=}, {end=}, {count=}')
+            return False
+        
+        # if start*end*count != 0 :
+        #     print (f'error : range is wrong -> {start=}, {end=}, {count=}')
+        self.drwtNos = {}
+
+        # start, end 없고 count만 있을때
+        if start == 0 and end == 0 and count != 0:
+            # 최근회차 range 갯수만큼
+            end = self.get_latest_lottoDrwtitle()
+            end +=1
+            start = end - count
+
+        elif start !=0 and end == 0 and count != 0:
+            # start부터 count 갯수만큼
+            end = start+count
+
+        elif start !=0 and end == 0 and count == 0:
+            # start 부터 제일 마지막까지
+            end = self.get_latest_lottoDrwtitle()
+            end +=1
+
+        elif start !=0 and end !=0 and count == 0:
+            # start부터 end까지
+            end +=1
+        
+        elif start==0 and end==0 and count==0:
+            print (f'error : all value is zero {start=}, {end=}, {count=}. Use get_latest_lottoDrwNum()')
+            return False
+      
+        
+        self.drwtNos = {}
+
+        with open("tmp/data.pickle","rb") as f: # rb : 바이트 형식으로 읽어오기
+            _data = pickle.load(f) # (파일)
+        
+        _data_list = list(_data.keys())
+        _range_list = list(range(start,end))
+
+        _tmp_arr=[]
+        for r in _range_list:
+            if r in _data_list:
+                self.drwtNos[r] = _data[r] 
+            else:
+                _tmp_arr.append(r)
+
+        for i in tqdm(_tmp_arr):
+            if i%30==0:
+                time.sleep(2)
+            self.drwTitle = i
+            self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
+            self.get_html('POST')
+            self.parsing_html()
+
+        # cache처럼 사용하기 위해 항상 저장        
+        
+        # 저장
+        with open("tmp/data.pickle","wb") as f: # wb : 바이트 형식으로 쓰기
+            pickle.dump(self.drwtNos, f) #(저장하고자 하는 객체, 파일)
+        
+        # # 호출
+        # with open("tmp/data.pickle","rb") as f: # rb : 바이트 형식으로 읽어오기
+        #     data = pickle.load(f) # (파일)
             
+ 
 
     # TODO return으로 파일경로. 파일명 회차이용해서 만들어야함
     # name을 인수로 받아서 원하는 파일명으로 생성
@@ -175,6 +205,9 @@ class Lotto:
     def make_csv(self, file_name='lotto-winning-numbers.csv'):
         
         self.file_name = file_name
+
+        if len(self.drwtNos) == 0:
+            return False
 
         df = pd.DataFrame(self.drwtNos)
         df = df.T
@@ -195,23 +228,58 @@ class Lotto:
     
     def update_csv(self, file_name='lotto-winning-numbers.csv'):
         self.file_name = file_name
+        
+        _file_list = os.listdir(os.getcwd())
+
+        if self.file_name not in _file_list:
+            print ('파일 없음')
+            self.make_csv(self.file_name)
+            return True
 
         df_1 = pd.read_csv(self.file_name, index_col='title')
         
-        self.get_latest_lottoDrwNum()
-        if self.drwTitle == int(df_1.index[0]):
-            print (f'There is nothing to update.')
-            return False
+        _drwtNo_start = list(self.drwtNos.keys())[0]
+        _drwtNo_end = list(self.drwtNos.keys())[-1]
+
+        _df_start = int(df_1.index[-1])
+        _df_end = int(df_1.index[0])
+
+
+        # 사용자가 range요청하고 업데이트 요청한경우
+        # range가 기존 파일보다 길이가 긴경우.
+        # 0. 같은 경우
+        # if _drwtNo_start == _df_start and _drwtNo_end == _df_end:
+        #     print (f'There is nothing to update.')
+        #     return False
+
+        # # 1. range 요청한 것이 1~10 / 파일 내용 4~6
+        # elif _drwtNo_start < _df_start and _drwtNo_end > _df_end:
+        #     pass
+
+        # # 1. range 요청한 것이 1~10 / 파일 내용 11~12
+        # elif _drwtNo_start < _df_start and _drwtNo_end < _df_end:
+        #     print (f'There is nothing to update.')
+        #     return False
         
-        self.get_range_lottoDrwNum(start=df_1.index[0])
+        # # 2. range 1~10 / 파일 내용 9~12
+        # if _drwtNo_start == _df_start and _drwtNo_end == _df_end:
+        #     print (f'There is nothing to update.')
+        #     return False
+
+        # # 3. range 1~10 / 파일 내용 12~15
+        # if _drwtNo_start == _df_start and _drwtNo_end == _df_end:
+        #     print (f'There is nothing to update.')
+        #     return False
+
+        # # 4. range 요청한 것이 1~10 / 파일 내용 1~12
 
         df_2 = pd.DataFrame(self.drwtNos)
         df_2 = df_2.T
         df_2.columns = ['drwtNo1', 'drwtNo2', 'drwtNo3', 'drwtNo4', 'drwtNo5', 'drwtNo6']
         df_2.index.name = 'title'
 
-        df = pd.concat([df_1,df_2])
-        df = df.sort_index(ascending=False)
+        # df = pd.concat([df_1,df_2])
+        df = df_2.sort_index(ascending=False)
 
         df.to_csv(self.file_name)
         print (f'Updated.')
@@ -225,7 +293,7 @@ class Lotto:
 
 
 # 최근 회차 당첨번호 조회
-mylotto=Lotto()
+# mylotto=Lotto()
 # print (mylotto)
 
 # 특정 회차 당첨번호 조회
@@ -233,8 +301,7 @@ mylotto=Lotto()
 # print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_range_lottoDrwNum(count=200)
-print (mylotto)
+# mylotto.get_range_lottoDrwNum(count=200)
 
 # mylotto.get_range_lottoDrwNum(start=900, count=10)
 # print (mylotto)
