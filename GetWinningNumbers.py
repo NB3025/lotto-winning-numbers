@@ -21,7 +21,7 @@ def parsing_html(self):
  - 만약 저장된 데이터가 없다면 최대 5번까지 재 요청 후 파싱 
 """
 
-class Lotto():
+class Lotto:
     def __init__(self,drwTitle=0):
         
         self.URL = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
@@ -199,6 +199,8 @@ class Lotto():
             print (f'There is nothing to update.')
             return False
         
+        self.get_range_lottoDrwNum(start=df_1.index[0])
+
         df_2 = pd.DataFrame(self.drwtNos)
         df_2 = df_2.T
         df_2.columns = ['drwtNo1', 'drwtNo2', 'drwtNo3', 'drwtNo4', 'drwtNo5', 'drwtNo6']
@@ -219,7 +221,7 @@ class Lotto():
 
 
 # 최근 회차 당첨번호 조회
-mylotto=Lotto()
+# mylotto=Lotto()
 # print (mylotto)
 
 # 특정 회차 당첨번호 조회
@@ -227,7 +229,7 @@ mylotto=Lotto()
 # print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_range_lottoDrwNum(count=10)
+# mylotto.get_range_lottoDrwNum(count=10)
 # print (mylotto)
 
 # mylotto.get_range_lottoDrwNum(start=900, count=10)
@@ -242,4 +244,4 @@ mylotto.get_range_lottoDrwNum(count=10)
 # mylotto.get_range_lottoDrwNum(start=900, end=910)
 
 # mylotto.make_csv()
-mylotto.update_csv()
+# mylotto.update_csv()
