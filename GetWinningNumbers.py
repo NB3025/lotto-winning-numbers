@@ -2,9 +2,11 @@ from numpy import mat
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+from tqdm import tqdm
 
 import os
 import datetime
+import time
 
 """ 동행복권 사이트에서 로또 당첨번호를 파싱할 수 있는 클래스
 def __init__(self):
@@ -25,6 +27,7 @@ class Lotto:
     def __init__(self,drwTitle=0):
         
         self.URL = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
+
         self.html = ''
         self.status_code = 0        
 
@@ -101,29 +104,6 @@ class Lotto:
             return False
 
 
-    def get_lotto_excel(self, start, end):
-        _url = f'https://www.dhlottery.co.kr/gameResult.do?method=allWinExel&gubun=byWin&nowPage=&drwNoStart={start}&drwNoEnd={end}'
-        _tmp_file_name = f'start_{start}_end_{end}_lotto.xls'
-        _data = requests.get(_url)
-
-        os.chdir("tmp/")
-        _file_list = os.listdir(os.getcwd())
-
-        if _tmp_file_name in _file_list:
-            now = datetime.datetime.now()
-            nowDatetime = now.strftime('%Y%m%d_%H%M%S_')
-            _tmp_file_name = nowDatetime+_tmp_file_name
-        
-
-        with open(_tmp_file_name, 'wb')as file:
-            file.write(_data.content)
-
-        return _tmp_file_name
-
-    #TODO 최근회차는 웹 크롤링으로, 2개 이상은 엑셀파일 받아서 값가져오기
-    # 최근회차만 호출하는 경우는 def get_latest_lottoDrwNum()을 이용
-    # 2개 이상을 웹 크롤링으로 하면 오래 걸림
-    # 받은 파일은 tmp아래 폴더에 저장
     def get_range_lottoDrwNum(self, start=0, end=0, count=0):
 
         if start < 0 and end < 0 and count < 0:
@@ -154,15 +134,15 @@ class Lotto:
             # start부터 end까지
             end +=1
         
-        print (self.get_lotto_excel(start,end))
+        self.drwtNos = {}
 
-        # self.drwtNos = {}
-
-        # for i in range(start,end):
-        #     self.drwTitle = i
-        #     self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
-        #     self.get_html('POST')
-        #     self.parsing_html()        
+        for i in tqdm(range(start,end)):
+            if i%30==0:
+                time.sleep(2)
+            self.drwTitle = i
+            self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
+            self.get_html('POST')
+            self.parsing_html()        
                 
         
     # 특정 회차 호출하기
@@ -253,8 +233,8 @@ mylotto=Lotto()
 # print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-mylotto.get_range_lottoDrwNum(count=10)
-# print (mylotto)
+mylotto.get_range_lottoDrwNum(count=200)
+print (mylotto)
 
 # mylotto.get_range_lottoDrwNum(start=900, count=10)
 # print (mylotto)

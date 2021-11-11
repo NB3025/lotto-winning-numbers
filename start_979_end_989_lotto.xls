@@ -1,0 +1,383 @@
+
+
+
+<!-- JSTL-->
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>Insert title here</title>
+</head>
+<body>
+	<table>
+	<tr align=center>
+		<td colspan=20><font size=5>회차별 추첨결과</font></td>
+	</tr>
+	</table>
+	
+	<table border="1">
+		 
+		<tr align=center bgcolor="#CCFFCC">
+			<td rowspan=2>년도</td>
+			<td rowspan=2>회차</td>
+			<td rowspan=2>추첨일</td>
+			<!--<td rowspan=2>판매액</td>-->
+			<td colspan=2>1등</td>
+			<td colspan=2>2등</td>
+			<td colspan=2>3등</td>
+			<td colspan=2>4등</td>
+			<td colspan=2>5등</td>
+			<td colspan=7>당첨번호</td>
+		</tr>
+		<tr align=center bgcolor="#CCFFCC">
+			<td>당첨자수</td>
+			<td>당첨금액</td>
+			<td>당첨자수</td>
+			<td>당첨금액</td>
+			<td>당첨자수</td>
+			<td>당첨금액</td>
+			<td>당첨자수</td>
+			<td>당첨금액</td>
+			<td>당첨자수</td>
+			<td>당첨금액</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+			<td>보너스</td>
+		</tr>
+	    
+	    
+	    	
+			<tr>
+			
+				<td bgcolor='#ccffff'  rowspan="10" align="center">2021</td>
+							
+				<td align="right">988</td>
+				<td align="center">2021.11.06</td>
+				<td align="right" bgcolor='#ffff99'>9</td>
+				<td align="right">2,678,489,375원</td>
+				
+				<td align="right" bgcolor='#ffff99'>61</td>
+				<td align="right">65,864,493원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,663</td>
+				<td align="right">1,508,725원</td>
+				
+				<td align="right" bgcolor='#ffff99'>129,322</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,139,025</td>
+				<td align="right">5,000원</td>
+				
+				<td>2</td>
+				<td>13</td>
+				<td>20</td>
+				<td>30</td>
+				<td>31</td>
+				<td>41</td>
+				<td>27</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">987</td>
+				<td align="center">2021.10.30</td>
+				<td align="right" bgcolor='#ffff99'>10</td>
+				<td align="right">2,378,711,625원</td>
+				
+				<td align="right" bgcolor='#ffff99'>73</td>
+				<td align="right">54,308,485원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,968</td>
+				<td align="right">1,335,755원</td>
+				
+				<td align="right" bgcolor='#ffff99'>140,004</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,283,682</td>
+				<td align="right">5,000원</td>
+				
+				<td>2</td>
+				<td>4</td>
+				<td>15</td>
+				<td>23</td>
+				<td>29</td>
+				<td>38</td>
+				<td>7</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">986</td>
+				<td align="center">2021.10.23</td>
+				<td align="right" bgcolor='#ffff99'>10</td>
+				<td align="right">2,375,275,125원</td>
+				
+				<td align="right" bgcolor='#ffff99'>70</td>
+				<td align="right">56,554,170원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,793</td>
+				<td align="right">1,417,398원</td>
+				
+				<td align="right" bgcolor='#ffff99'>133,889</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,231,167</td>
+				<td align="right">5,000원</td>
+				
+				<td>7</td>
+				<td>10</td>
+				<td>16</td>
+				<td>28</td>
+				<td>41</td>
+				<td>42</td>
+				<td>40</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">985</td>
+				<td align="center">2021.10.16</td>
+				<td align="right" bgcolor='#ffff99'>10</td>
+				<td align="right">2,434,752,975원</td>
+				
+				<td align="right" bgcolor='#ffff99'>62</td>
+				<td align="right">65,450,349원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,581</td>
+				<td align="right">1,572,229원</td>
+				
+				<td align="right" bgcolor='#ffff99'>126,523</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,123,240</td>
+				<td align="right">5,000원</td>
+				
+				<td>17</td>
+				<td>21</td>
+				<td>23</td>
+				<td>30</td>
+				<td>34</td>
+				<td>44</td>
+				<td>19</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">984</td>
+				<td align="center">2021.10.09</td>
+				<td align="right" bgcolor='#ffff99'>7</td>
+				<td align="right">3,453,006,268원</td>
+				
+				<td align="right" bgcolor='#ffff99'>64</td>
+				<td align="right">62,945,427원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,596</td>
+				<td align="right">1,551,814원</td>
+				
+				<td align="right" bgcolor='#ffff99'>128,129</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,149,335</td>
+				<td align="right">5,000원</td>
+				
+				<td>3</td>
+				<td>10</td>
+				<td>23</td>
+				<td>35</td>
+				<td>36</td>
+				<td>37</td>
+				<td>18</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">983</td>
+				<td align="center">2021.10.02</td>
+				<td align="right" bgcolor='#ffff99'>10</td>
+				<td align="right">2,503,422,225원</td>
+				
+				<td align="right" bgcolor='#ffff99'>78</td>
+				<td align="right">53,491,928원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,640</td>
+				<td align="right">1,580,444원</td>
+				
+				<td align="right" bgcolor='#ffff99'>131,780</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,196,308</td>
+				<td align="right">5,000원</td>
+				
+				<td>13</td>
+				<td>23</td>
+				<td>26</td>
+				<td>31</td>
+				<td>35</td>
+				<td>43</td>
+				<td>15</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">982</td>
+				<td align="center">2021.09.25</td>
+				<td align="right" bgcolor='#ffff99'>8</td>
+				<td align="right">3,023,630,672원</td>
+				
+				<td align="right" bgcolor='#ffff99'>81</td>
+				<td align="right">49,771,699원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,931</td>
+				<td align="right">1,375,472원</td>
+				
+				<td align="right" bgcolor='#ffff99'>139,208</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,291,933</td>
+				<td align="right">5,000원</td>
+				
+				<td>5</td>
+				<td>7</td>
+				<td>13</td>
+				<td>20</td>
+				<td>21</td>
+				<td>44</td>
+				<td>33</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">981</td>
+				<td align="center">2021.09.18</td>
+				<td align="right" bgcolor='#ffff99'>13</td>
+				<td align="right">1,992,863,193원</td>
+				
+				<td align="right" bgcolor='#ffff99'>65</td>
+				<td align="right">66,428,774원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,824</td>
+				<td align="right">1,528,991원</td>
+				
+				<td align="right" bgcolor='#ffff99'>136,630</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,289,650</td>
+				<td align="right">5,000원</td>
+				
+				<td>27</td>
+				<td>36</td>
+				<td>37</td>
+				<td>41</td>
+				<td>43</td>
+				<td>45</td>
+				<td>32</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">980</td>
+				<td align="center">2021.09.11</td>
+				<td align="right" bgcolor='#ffff99'>7</td>
+				<td align="right">3,409,443,215원</td>
+				
+				<td align="right" bgcolor='#ffff99'>70</td>
+				<td align="right">56,824,054원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,819</td>
+				<td align="right">1,411,027원</td>
+				
+				<td align="right" bgcolor='#ffff99'>135,751</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,237,534</td>
+				<td align="right">5,000원</td>
+				
+				<td>3</td>
+				<td>13</td>
+				<td>16</td>
+				<td>23</td>
+				<td>24</td>
+				<td>35</td>
+				<td>14</td>
+				
+			</tr>
+			
+			
+		
+	    	
+			<tr>
+							
+				<td align="right">979</td>
+				<td align="center">2021.09.04</td>
+				<td align="right" bgcolor='#ffff99'>14</td>
+				<td align="right">1,606,400,518원</td>
+				
+				<td align="right" bgcolor='#ffff99'>79</td>
+				<td align="right">47,446,429원</td>
+				
+				<td align="right" bgcolor='#ffff99'>3,414</td>
+				<td align="right">1,097,911원</td>
+				
+				<td align="right" bgcolor='#ffff99'>154,980</td>
+				<td align="right">50,000원</td>
+				
+				<td align="right" bgcolor='#ffff99'>2,403,760</td>
+				<td align="right">5,000원</td>
+				
+				<td>7</td>
+				<td>11</td>
+				<td>16</td>
+				<td>21</td>
+				<td>27</td>
+				<td>33</td>
+				<td>24</td>
+				
+			</tr>
+			
+			
+		
+	    
+	</table>
+</body>
+</html>
