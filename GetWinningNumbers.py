@@ -100,8 +100,30 @@ class Lotto:
             print (f'error {self.status_code=}')
             return False
 
-    #TODO start, end 를 받아서 원하는 기간의 숫자만 받도록.
-    # end가 없으면 최근회차까지 모두 받기
+
+    def get_lotto_excel(self, start, end):
+        _url = f'https://www.dhlottery.co.kr/gameResult.do?method=allWinExel&gubun=byWin&nowPage=&drwNoStart={start}&drwNoEnd={end}'
+        _tmp_file_name = f'start_{start}_end_{end}_lotto.xls'
+        _data = requests.get(_url)
+
+        os.chdir("tmp/")
+        _file_list = os.listdir(os.getcwd())
+
+        if _tmp_file_name in _file_list:
+            now = datetime.datetime.now()
+            nowDatetime = now.strftime('%Y%m%d_%H%M%S_')
+            _tmp_file_name = nowDatetime+_tmp_file_name
+        
+
+        with open(_tmp_file_name, 'wb')as file:
+            file.write(_data.content)
+
+        return _tmp_file_name
+
+    #TODO 최근회차는 웹 크롤링으로, 2개 이상은 엑셀파일 받아서 값가져오기
+    # 최근회차만 호출하는 경우는 def get_latest_lottoDrwNum()을 이용
+    # 2개 이상을 웹 크롤링으로 하면 오래 걸림
+    # 받은 파일은 tmp아래 폴더에 저장
     def get_range_lottoDrwNum(self, start=0, end=0, count=0):
 
         if start < 0 and end < 0 and count < 0:
@@ -112,7 +134,7 @@ class Lotto:
             print (f'error : range is wrong -> {start=}, {end=}, {count=}')
         self.drwtNos = {}
 
-        # start, end 없고 range만 있을때
+        # start, end 없고 count만 있을때
         if start == 0 and end == 0 and count != 0:
             # 최근회차 range 갯수만큼
             end = self.get_latest_lottoDrwtitle()
@@ -120,7 +142,7 @@ class Lotto:
             start = end - count
 
         elif start !=0 and end == 0 and count != 0:
-            # start부터 range 갯수만큼
+            # start부터 count 갯수만큼
             end = start+count
 
         elif start !=0 and end == 0 and count == 0:
@@ -132,13 +154,15 @@ class Lotto:
             # start부터 end까지
             end +=1
         
-        self.drwtNos = {}
+        print (self.get_lotto_excel(start,end))
 
-        for i in range(start,end):
-            self.drwTitle = i
-            self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
-            self.get_html('POST')
-            self.parsing_html()        
+        # self.drwtNos = {}
+
+        # for i in range(start,end):
+        #     self.drwTitle = i
+        #     self.post_data = {'drwNo': self.drwTitle, 'drwNoList': self.drwTitle}
+        #     self.get_html('POST')
+        #     self.parsing_html()        
                 
         
     # 특정 회차 호출하기
@@ -221,7 +245,7 @@ class Lotto:
 
 
 # 최근 회차 당첨번호 조회
-# mylotto=Lotto()
+mylotto=Lotto()
 # print (mylotto)
 
 # 특정 회차 당첨번호 조회
@@ -229,7 +253,7 @@ class Lotto:
 # print (mylotto)
 
 # 최근 10개 당첨번호 조회 
-# mylotto.get_range_lottoDrwNum(count=10)
+mylotto.get_range_lottoDrwNum(count=10)
 # print (mylotto)
 
 # mylotto.get_range_lottoDrwNum(start=900, count=10)
